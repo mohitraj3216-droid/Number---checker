@@ -21,6 +21,9 @@ fullscreen = 0
 
 android.accept_sdk_license = true
 
+p4a.branch = develop
+p4a.commit = 0382d27
+
 [buildozer]
 
 log_level = 2
