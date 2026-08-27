@@ -18,9 +18,8 @@ orientation = portrait
 
 fullscreen = 0
 
-p4a.branch = develop
 
-android.accept_sdk_licence = true
+android.accept_sdk_license = true
 
 [buildozer]
 
