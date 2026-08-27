@@ -20,6 +20,8 @@ fullscreen = 0
 
 p4a.branch = develop
 
+android.accept_sdk_licence = true
+
 [buildozer]
 
 log_level = 2
