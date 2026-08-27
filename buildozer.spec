@@ -14,6 +14,9 @@ version = 1.0
 
 requirements = python3,kivy
 
+p4a.branch = master
+p4a.commit = 0382d27
+
 orientation = portrait
 
 fullscreen = 0
