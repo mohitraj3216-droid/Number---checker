@@ -18,6 +18,7 @@ orientation = portrait
 
 fullscreen = 0
 
+p4a.branch = develop
 
 [buildozer]
 
