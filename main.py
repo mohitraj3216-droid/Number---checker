@@ -1,3 +1,5 @@
+import random
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -5,9 +7,13 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 
 
-class NumberCheckerApp(App):
+class NumberGuessingApp(App):
 
     def build(self):
+
+        # Game variables
+        self.secret_number = random.randint(1, 100)
+        self.chances = 0
 
         # Main layout
         layout = BoxLayout(
@@ -18,126 +24,130 @@ class NumberCheckerApp(App):
 
         # Title
         title = Label(
-            text="NUMBER CHECKER",
-            font_size=30
+            text="NUMBER GUESSING GAME",
+            font_size=28
+        )
+
+        # Instructions
+        instructions = Label(
+            text="Guess a number between 1 and 100",
+            font_size=18
         )
 
         # Number input
         self.number_input = TextInput(
-            hint_text="Enter a number",
+            hint_text="Enter your guess",
             input_filter="int",
             multiline=False
         )
 
-        # Buttons
-        even_odd_button = Button(
-            text="Check Even or Odd"
-        )
-
-        positive_negative_button = Button(
-            text="Check Positive or Negative"
-        )
-
-        prime_button = Button(
-            text="Check Prime Number"
-        )
-
-        clear_button = Button(
-            text="Clear"
+        # Guess button
+        guess_button = Button(
+            text="GUESS",
+            font_size=20
         )
 
         # Result
         self.result = Label(
-            text="Enter a number and choose an option",
+            text="You have 10 chances",
+            font_size=18
+        )
+
+        # Chances
+        self.chances_label = Label(
+            text="Chances: 0 / 10",
+            font_size=16
+        )
+
+        # Reset button
+        reset_button = Button(
+            text="NEW GAME",
             font_size=18
         )
 
         # Button functions
-        even_odd_button.bind(
-            on_press=self.check_even_odd
+        guess_button.bind(
+            on_press=self.check_guess
         )
 
-        positive_negative_button.bind(
-            on_press=self.check_positive_negative
+        reset_button.bind(
+            on_press=self.reset_game
         )
 
-        prime_button.bind(
-            on_press=self.check_prime
-        )
-
-        clear_button.bind(
-            on_press=self.clear
-        )
-
-        # Add everything to the screen
+        # Add widgets
         layout.add_widget(title)
+        layout.add_widget(instructions)
         layout.add_widget(self.number_input)
-        layout.add_widget(even_odd_button)
-        layout.add_widget(positive_negative_button)
-        layout.add_widget(prime_button)
-        layout.add_widget(clear_button)
+        layout.add_widget(guess_button)
         layout.add_widget(self.result)
+        layout.add_widget(self.chances_label)
+        layout.add_widget(reset_button)
 
         return layout
 
 
-    def check_even_odd(self, instance):
+    def check_guess(self, instance):
 
+        # Check if input is empty
         if self.number_input.text == "":
             self.result.text = "Please enter a number"
             return
 
-        number = int(self.number_input.text)
+        # Convert input into integer
+        guess = int(self.number_input.text)
 
-        if number % 2 == 0:
-            self.result.text = str(number) + " is Even"
-        else:
-            self.result.text = str(number) + " is Odd"
+        # Increase chances
+        self.chances = self.chances + 1
 
+        # Check the guess
+        if guess > self.secret_number:
 
-    def check_positive_negative(self, instance):
+            self.result.text = "The number is smaller"
 
-        if self.number_input.text == "":
-            self.result.text = "Please enter a number"
-            return
+        elif guess < self.secret_number:
 
-        number = int(self.number_input.text)
-
-        if number > 0:
-            self.result.text = str(number) + " is Positive"
-
-        elif number < 0:
-            self.result.text = str(number) + " is Negative"
+            self.result.text = "The number is bigger"
 
         else:
-            self.result.text = "The number is Zero"
+
+            self.result.text = "🎉 Correct! You guessed it!"
+            self.number_input.disabled = True
+
+        # Show chances
+        self.chances_label.text = (
+            "Chances: " + str(self.chances) + " / 10"
+        )
+
+        # Check if chances are over
+        if self.chances >= 10 and guess != self.secret_number:
+
+            self.result.text = (
+                "Game Over! Number was "
+                + str(self.secret_number)
+            )
+
+            self.number_input.disabled = True
 
 
-    def check_prime(self, instance):
+    def reset_game(self, instance):
 
-        if self.number_input.text == "":
-            self.result.text = "Please enter a number"
-            return
+        # Generate a new secret number
+        self.secret_number = random.randint(1, 100)
 
-        number = int(self.number_input.text)
+        # Reset chances
+        self.chances = 0
 
-        if number <= 1:
-            self.result.text = str(number) + " is not Prime"
-            return
-
-        for i in range(2, number):
-
-            if number % i == 0:
-                self.result.text = str(number) + " is not Prime"
-                return
-
-        self.result.text = str(number) + " is Prime"
-
-
-    def clear(self, instance):
-
+        # Clear input
         self.number_input.text = ""
-        self.result.text = "Enter a number and choose an option"
+
+        # Enable input again
+        self.number_input.disabled = False
+
+        # Reset result
+        self.result.text = "You have 10 chances"
+
+        # Reset chances label
+        self.chances_label.text = "Chances: 0 / 10"
 
 
-NumberCheckerApp().run()
+NumberGuessingApp().run()
